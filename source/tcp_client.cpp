@@ -1,4 +1,5 @@
 #include "tcp_client.hpp"
+#include <csignal>
 
 tcp_client::tcp_client(const char* address, int port): _address(address), _port(port) {}
 
@@ -19,14 +20,14 @@ void tcp_client::connect() {
     }
 }
 
-void tcp_client::send(const char *message, int len) const {
+void tcp_client::send(int, const char *message, int len) const {
     if (::send(_socket, message, len, 0) < 0) {
         throw std::logic_error("Failed to send a message to the server!\n");
     }
 }
 
-const char *tcp_client::receive() const {
-    auto buffer = new char [1024];
+const char *tcp_client::receive(int) const {
+    auto buffer = new char[1024];
     if (::recv(_socket, buffer, 1024, 0) < 0) {
         throw std::logic_error("Failed to receive a message from the server!\n");
     }

@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SMART_POINTERS_TCP_CLIENT_HPP
-#define INCLUDE_SMART_POINTERS_TCP_CLIENT_HPP
+#ifndef CHATAPPLICATION_TCP_CLIENT_HPP
+#define CHATAPPLICATION_TCP_CLIENT_HPP
 
 #include "i_client.hpp"
 
@@ -20,10 +20,10 @@ public:
     ~tcp_client() override;
 
     void connect() override;
-    void send(const char*, int) const override;
-    [[nodiscard]] const char* receive() const override;
+    void send(int, const char*, int) const override;
+    [[nodiscard]] const char* receive(int) const override;
     void close() const override;
 };
 
 
-#endif //INCLUDE_SMART_POINTERS_TCP_CLIENT_HPP
+#endif //CHATAPPLICATION_TCP_CLIENT_HPP

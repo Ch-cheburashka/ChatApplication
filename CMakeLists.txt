@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(ChatApplication)
 
+add_library(thread_manager
+            source/thread_manager.cpp
+)
+
 add_library(tcp_server
         source/tcp_server.cpp
 )
@@ -22,6 +26,11 @@ add_library(server
 )
 
 target_include_directories(client PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(thread_manager PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
@@ -55,3 +64,5 @@ add_executable(cli_client cli/cli_client.cpp)
 target_link_libraries(cli_client tcp_client client)
 
 target_link_libraries(cli_server tcp_server server)
+
+target_link_libraries(tcp_server thread_manager)
