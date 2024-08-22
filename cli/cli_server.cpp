@@ -5,7 +5,7 @@
 int main () {
     try {
         server serv;
-        serv.connect("127.0.0.1", 1247, 3);
+        serv.connect("127.0.0.1", 1289, 4);
         serv.close();
         return 0;
     } catch (const std::exception& ex) {

@@ -33,16 +33,15 @@ void tcp_server::connect() {
 
     for (;;) {
         int client_socket = accept(_lsocket, nullptr, nullptr);
-        if (client_socket < 0) {
-            throw std::logic_error("Failed to accept a request from client!\n");
-        }
-        std::cout << _threads.size() << "\n\n";
-        _client_sockets.emplace_back(client_socket);
-        _threads.emplace_back(std::thread(&tcp_server::handle_client, this, _client_sockets.size()-1));
         if (flag == 1) {
             std::cout << "signal caught\n";
             break;
         }
+        if (client_socket < 0) {
+            throw std::logic_error("Failed to accept a request from client!\n");
+        }
+        _client_sockets.emplace_back(client_socket);
+        _threads.emplace_back(std::thread(&tcp_server::handle_client, this, _client_sockets.size()-1));
     }
 }
 
@@ -57,6 +56,7 @@ const char* tcp_server::receive(int client_index) const {
     if (::recv(_client_sockets[client_index], buffer, 1024, 0) < 0) {
         throw std::logic_error("Failed to receive a message from a client!\n");
     }
+    buffer[strlen(buffer)] = '\0';
     return buffer;
 }
 
@@ -80,11 +80,14 @@ void tcp_server::handle_client(int client_index) const {
                 std::cout << "signal caught\n";
                 break;
             }
-            const char* client_message = receive(client_index);
-            if (strlen(client_message) == 0) break;
+            const char *client_message = receive(client_index);
+            if (strlen(client_message) == 0) continue;
             std::cout << "Received from client: " << client_message << std::endl;
-
-            send(client_index, client_message, static_cast<int>(strlen(client_message)));
+            std::lock_guard<std::mutex> lock(_clients_sockets_mutex);
+            for (int i = 0; i < _client_sockets.size(); ++i) {
+                if (client_index == i) continue;
+                send(i, client_message, static_cast<int>(strlen(client_message)));
+            }
         }
     }
     catch (const std::exception& ex) {

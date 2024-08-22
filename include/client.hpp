@@ -10,8 +10,6 @@ public:
     client() = default;
 
     void connect(const char*, int);
-    void send(const std::string&);
-    std::string receive();
     void close();
 };
 

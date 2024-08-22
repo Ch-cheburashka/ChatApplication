@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(ChatApplication)
 
+add_compile_options(-Wall -Wextra)
+
 add_library(thread_manager
             source/thread_manager.cpp
 )
@@ -66,3 +68,5 @@ target_link_libraries(cli_client tcp_client client)
 target_link_libraries(cli_server tcp_server server)
 
 target_link_libraries(tcp_server thread_manager)
+
+target_link_libraries(tcp_client thread_manager)

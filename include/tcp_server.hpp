@@ -12,6 +12,7 @@
 #include <list>
 #include "thread_manager.hpp"
 #include <vector>
+#include <mutex>
 
 class tcp_server : public i_client {
     const char* _address;
@@ -20,6 +21,7 @@ class tcp_server : public i_client {
     int _clients_number;
     std::vector<int> _client_sockets;
     std::list<thread_manager> _threads;
+    mutable std::mutex _clients_sockets_mutex;
 public:
     tcp_server(const char*, int, int);
 
